@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мой бюджет ✨</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body { 
+    font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; 
+    background: linear-gradient(135deg, #faf3f0 0%, #f5e6f0 100%); 
+    color: #4a4a4a; 
+    padding: 20px;
+    min-height: 100vh;
+  }
+  
+  h1 { 
+    font-size: 28px; 
+    margin-bottom: 8px; 
+    color: #6b5b7b;
+    font-weight: 600;
+  }
+  
+  .subtitle {
+    color: #9a8ba0;
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+  
+  .card { 
+    background: #ffffff; 
+    border-radius: 20px; 
+    padding: 24px; 
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(107, 91, 123, 0.08);
+    border: 1px solid rgba(107, 91, 123, 0.05);
+  }
+  
+  .card h2 { 
+    font-size: 16px; 
+    margin-bottom: 16px; 
+    color: #6b5b7b;
+    font-weight: 600;
+  }
+  
+  .grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 20px; 
+  }
+  
+  @media (max-width: 800px) { 
+    .grid { grid-template-columns: 1fr; } 
+  }
+  
+  label { 
+    font-size: 12px; 
+    color: #9a8ba0; 
+    display: block; 
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  
+  input, select { 
+    width: 100%; 
+    background: #faf8fa; 
+    border: 1.5px solid #e8e0e8; 
+    color: #4a4a4a; 
+    border-radius: 12px; 
+    padding: 12px 14px; 
+    font-size: 14px; 
+    margin-bottom: 12px;
+    transition: all 0.2s;
+  }
+  
+  input:focus, select:focus {
+    outline: none;
+    border-color: #d4a5d4;
+    background: #ffffff;
+  }
+  
+  button { 
+    background: linear-gradient(135deg, #d4a5d4 0%, #c9a0c9 100%); 
+    color: #ffffff; 
+    border: none; 
+    border-radius: 12px; 
+    padding: 12px 20px; 
+    font-size: 14px; 
+    cursor: pointer; 
+    width: 100%;
+    font-weight: 500;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(212, 165, 212, 0.3);
+  }
+  
+  button:hover { 
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(212, 165, 212, 0.4);
+  }
+  
+  button:active {
+    transform: translateY(0);
+  }
+  
+  button.secondary {
+    background: #f5f0f5;
+    color: #6b5b7b;
+    box-shadow: none;
+  }
+  
+  button.secondary:hover {
+    background: #ede5ed;
+  }
+  
+  button.danger {
+    background: #f5e6e6;
+    color: #d47070;
+    box-shadow: none;
+  }
+  
+  button.danger:hover {
+    background: #f0d5d5;
+  }
+  
+  button.small {
+    padding: 6px 12px;
+    font-size: 12px;
+    width: auto;
+  }
+  
+  .category { 
+    background: #faf8fa; 
+    border-radius: 16px; 
+    padding: 16px; 
+    margin-bottom: 12px;
+    border: 1px solid rgba(107, 91, 123, 0.05);
+  }
+  
+  .cat-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 10px; 
+  }
+  
+  .cat-name { 
+    font-weight: 600; 
+    font-size: 14px;
+    color: #6b5b7b;
+  }
+  
+  .cat-amount { 
+    font-size: 20px; 
+    font-weight: 700;
+  }
+  
+  .cat-bar { 
+    height: 8px; 
+    background: #f0e8f0; 
+    border-radius: 4px; 
+    overflow: hidden; 
+  }
+  
+  .cat-bar div { 
+    height: 100%; 
+    background: linear-gradient(90deg, #d4a5d4 0%, #c9a0c9 100%);
+    transition: width 0.3s;
+  }
+  
+  .cat-bar div.low { 
+    background: linear-gradient(90deg, #f4c57d 0%, #f0b86a 100%); 
+  }
+  
+  .cat-bar div.critical { 
+    background: linear-gradient(90deg, #f4a0a0 0%, #f08a8a 100%); 
+  }
+  
+  .pos { color: #7ab8a0; } 
+  .neg { color: #f08a8a; }
+  
+  .tx-list { 
+    max-height: 300px; 
+    overflow-y: auto; 
+  }
+  
+  .tx-item { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    padding: 12px 0; 
+    border-bottom: 1px solid #f5f0f5; 
+    font-size: 13px; 
+  }
+  
+  .tx-item:last-child { 
+    border-bottom: none; 
+  }
+  
+  .tx-cat { 
+    color: #9a8ba0; 
+    font-size: 11px;
+    margin-top: 2px;
+  }
+  
+  .toolbar { 
+    display: flex; 
+    gap: 10px; 
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .toolbar button { 
+    width: auto; 
+    padding: 10px 16px; 
+    font-size: 12px;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #9a8ba0;
+  }
+  
+  .empty-state::before {
+    content: '🌸';
+    font-size: 48px;
+    display: block;
+    margin-bottom: 12px;
+  }
+  
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal.active {
+    display: flex;
+  }
+  
+  .modal-content {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .modal-header h2 {
+    margin: 0;
+  }
+  
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #9a8ba0;
+    cursor: pointer;
+    width: auto;
+    padding: 0;
+    box-shadow: none;
+  }
+  
+  .cat-edit-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    align-items: center;
+  }
+  
+  .cat-edit-item input {
+    margin: 0;
+    flex: 1;
+  }
+  
+  .cat-edit-item input[type="text"] {
+    flex: 2;
+  }
+</style>
+</head>
+<body>
+
+<h1>Мой бюджет ✨</h1>
+<div class="subtitle">Учёт расходов без стресса</div>
+
+<div class="toolbar">
+  <button class="secondary" onclick="openSettings()">⚙️ Настройки категорий</button>
+  <button class="secondary" onclick="exportData()">Экспорт</button>
+  <button class="secondary" onclick="importData()">Импорт</button>
+  <button class="secondary" onclick="resetMonth()">Новый месяц</button>
+</div>
+
+<!-- КАЛЬКУЛЯТОР ПЕРВЫМ -->
+<div class="card">
+  <h2>➕ Добавить трату</h2>
+  <label>Сумма</label>
+  <input type="number" id="amount" placeholder="500">
+  
+  <label>Категория (если не выбрана — повседневные)</label>
+  <select id="category">
+    <option value="">— Автоматически —</option>
+  </select>
+  
+  <label>Комментарий</label>
+  <input type="text" id="note" placeholder="продукты в Пятёрочке">
+  
+  <button onclick="addExpense()">Добавить</button>
+</div>
+
+<!-- ИСТОРИЯ ТРАТ -->
+<div class="card">
+  <h2>📜 История трат</h2>
+  <div class="tx-list" id="transactions"></div>
+</div>
+
+<!-- ШКАЛЫ КАТЕГОРИЙ ВНИЗУ -->
+<div class="card">
+  <h2>📊 Остатки по категориям</h2>
+  <div id="categories"></div>
+</div>
+
+<!-- МОДАЛКА НАСТРОЕК -->
+<div class="modal" id="settingsModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>⚙️ Настройки категорий</h2>
+      <button class="close-btn" onclick="closeSettings()">×</button>
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+      <h3 style="font-size: 14px; color: #6b5b7b; margin-bottom: 12px;">Добавить новую категорию</h3>
+      <div class="cat-edit-item">
+        <input type="text" id="newCatName" placeholder="Название категории">
+        <input type="number" id="newCatBudget" placeholder="Бюджет">
+        <button class="small" onclick="addCategory()">Добавить</button>
+      </div>
+    </div>
+    
+    <div>
+      <h3 style="font-size: 14px; color: #6b5b7b; margin-bottom: 12px;">Существующие категории</h3>
+      <div id="catEditList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== БЮДЖЕТЫ НА НОЯБРЬ =====
+const defaultBudgets = {
+  'Повседневные': 40000,
+  'Бензин': 5000,
+  'Корм': 6000,
+  'Ипотека': 38200,
+  'Коммуналка': 17500,
+  'Связь': 2420,
+  'Здоровье': 16750,
+  'Поездка': 0
+};
+
+let state = {
+  budgets: {...defaultBudgets},
+  spent: {},
+  transactions: []
+};
+
+function load() {
+  const saved = localStorage.getItem('expenses');
+  if (saved) { state = JSON.parse(saved); }
+  else { save(); }
+  render();
+}
+
+function save() {
+  localStorage.setItem('expenses', JSON.stringify(state));
+}
+
+function addExpense() {
+  const amount = parseFloat(document.getElementById('amount').value);
+  if (!amount || amount <= 0) return alert('Введи сумму');
+  
+  let category = document.getElementById('category').value;
+  const note = document.getElementById('note').value;
+  
+  // Автоматическая категоризация
+  if (!category) {
+    const lowerNote = note.toLowerCase();
+    if (lowerNote.includes('бензин') || lowerNote.includes('заправк')) category = 'Бензин';
+    else if (lowerNote.includes('корм') || lowerNote.includes('наполнит')) category = 'Корм';
+    else if (lowerNote.includes('ипотек')) category = 'Ипотека';
+    else if (lowerNote.includes('жкх') || lowerNote.includes('коммуналк')) category = 'Коммуналка';
+    else if (lowerNote.includes('связь') || lowerNote.includes('интернет')) category = 'Связь';
+    else if (lowerNote.includes('стоматолог') || lowerNote.includes('капа') || lowerNote.includes('аптек')) category = 'Здоровье';
+    else category = 'Повседневные';
+  }
+  
+  if (!state.spent[category]) state.spent[category] = 0;
+  state.spent[category] += amount;
+  
+  state.transactions.unshift({
+    date: new Date().toISOString().slice(0, 10),
+    amount,
+    category,
+    note
+  });
+  
+  save();
+  render();
+  
+  document.getElementById('amount').value = '';
+  document.getElementById('note').value = '';
+}
+
+function render() {
+  // Обновляем select категорий
+  const select = document.getElementById('category');
+  select.innerHTML = '<option value="">— Автоматически —</option>';
+  Object.keys(state.budgets).forEach(cat => {
+    select.innerHTML += `<option value="${cat}">${cat}</option>`;
+  });
+  
+  // Категории
+  let catHTML = '';
+  Object.entries(state.budgets).forEach(([name, budget]) => {
+    const spent = state.spent[name] || 0;
+    const remaining = budget - spent;
+    const percent = budget > 0 ? (spent / budget) * 100 : 0;
+    
+    let barClass = '';
+    if (percent > 90) barClass = 'critical';
+    else if (percent > 75) barClass = 'low';
+    
+    catHTML += `
+      <div class="category">
+        <div class="cat-header">
+          <span class="cat-name">${name}</span>
+          <span class="cat-amount ${remaining < 0 ? 'neg' : 'pos'}">${remaining.toLocaleString('ru-RU')} ₽</span>
+        </div>
+        <div class="cat-bar"><div class="${barClass}" style="width:${Math.min(percent, 100)}%"></div></div>
+        <div style="font-size:11px;color:#9a8ba0;margin-top:6px">Потрачено: ${spent.toLocaleString('ru-RU')} ₽ из ${budget.toLocaleString('ru-RU')} ₽</div>
+      </div>
+    `;
+  });
+  document.getElementById('categories').innerHTML = catHTML;
+  
+  // Транзакции
+  let txHTML = '';
+  state.transactions.slice(0, 20).forEach(tx => {
+    txHTML += `
+      <div class="tx-item">
+        <div>
+          <div>${tx.note || 'Без комментария'}</div>
+          <div class="tx-cat">${tx.category} · ${tx.date}</div>
+        </div>
+        <div class="neg">-${tx.amount.toLocaleString('ru-RU')} ₽</div>
+      </div>
+    `;
+  });
+  document.getElementById('transactions').innerHTML = txHTML || '<div class="empty-state">Пока нет трат</div>';
+}
+
+function openSettings() {
+  document.getElementById('settingsModal').classList.add('active');
+  renderCatEditList();
+}
+
+function closeSettings() {
+  document.getElementById('settingsModal').classList.remove('active');
+}
+
+function renderCatEditList() {
+  let html = '';
+  Object.entries(state.budgets).forEach(([name, budget]) => {
+    html += `
+      <div class="cat-edit-item">
+        <input type="text" value="${name}" id="catName_${name}" onchange="updateCategoryName('${name}', this.value)">
+        <input type="number" value="${budget}" id="catBudget_${name}" onchange="updateCategoryBudget('${name}', this.value)">
+        <button class="small danger" onclick="deleteCategory('${name}')">Удалить</button>
+      </div>
+    `;
+  });
+  document.getElementById('catEditList').innerHTML = html;
+}
+
+function addCategory() {
+  const name = document.getElementById('newCatName').value.trim();
+  const budget = parseFloat(document.getElementById('newCatBudget').value);
+  
+  if (!name || isNaN(budget)) return alert('Заполни название и бюджет');
+  if (state.budgets[name]) return alert('Такая категория уже есть');
+  
+  state.budgets[name] = budget;
+  save();
+  render();
+  renderCatEditList();
+  
+  document.getElementById('newCatName').value = '';
+  document.getElementById('newCatBudget').value = '';
+}
+
+function updateCategoryName(oldName, newName) {
+  newName = newName.trim();
+  if (!newName || newName === oldName) return;
+  if (state.budgets[newName]) return alert('Такая категория уже есть');
+  
+  const budget = state.budgets[oldName];
+  const spent = state.spent[oldName] || 0;
+  
+  delete state.budgets[oldName];
+  state.budgets[newName] = budget;
+  
+  if (spent > 0) {
+    delete state.spent[oldName];
+    state.spent[newName] = spent;
+  }
+  
+  // Обновляем транзакции
+  state.transactions.forEach(tx => {
+    if (tx.category === oldName) tx.category = newName;
+  });
+  
+  save();
+  render();
+  renderCatEditList();
+}
+
+function updateCategoryBudget(name, newBudget) {
+  newBudget = parseFloat(newBudget);
+  if (isNaN(newBudget) || newBudget < 0) return;
+  
+  state.budgets[name] = newBudget;
+  save();
+  render();
+}
+
+function deleteCategory(name) {
+  if (!confirm(`Удалить категорию "${name}"? Потраченные деньги (${state.spent[name] || 0} ₽) тоже исчезнут.`)) return;
+  
+  delete state.budgets[name];
+  delete state.spent[name];
+  
+  save();
+  render();
+  renderCatEditList();
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `expenses-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+}
+
+function importData() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = ev => {
+      state = JSON.parse(ev.target.result);
+      save();
+      render();
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function resetMonth() {
+  if (confirm('Сбросить все траты и начать новый месяц? Категории останутся.')) {
+    state.spent = {};
+    state.transactions = [];
+    save();
+    render();
+  }
+}
+
+load();
+</script>
+
+</body>
+</html>
